@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Album</title>
+</head>
+<body>
+    <h1>Photo Album</h1>
+    <input type="file" id="photoInput" accept="image/*">
+    <button onclick="uploadPhoto()">Upload Photo</button>
+
+    <script>
+        function uploadPhoto() {
+            const input = document.getElementById('photoInput');
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        const metadata = {
+                            name: file.name,
+                            size: file.size,
+                            type: file.type,
+                            lastModified: file.lastModified,
+                            width: img.width,
+                            height: img.height
+                        };
+                        saveMetadata(metadata);
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveMetadata(metadata) {
+            const jsonData = JSON.stringify(metadata, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
