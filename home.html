@@ -4,13 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photo Album</title>
+    <style>
+        body {
+            background-color: #d7e4f0; /* Soft blue color */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input, button {
+            margin: 10px 0;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #5a9bd4; /* Adjusted color to fit background */
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #4a8ac4; /* Slightly darker shade for hover effect */
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            background-color: #3a7ab4; /* Even darker shade for active effect */
+            transform: translateY(0);
+        }
+        .button-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #5a9bd4; /* Adjusted color to fit background */
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button-container button:hover {
+            background-color: #4a8ac4; /* Slightly darker shade for hover effect */
+        }
+        #photoInput {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Photo Album</h1>
-    <input type="file" id="photoInput" accept="image/*">
-    <button onclick="uploadPhoto()">Upload Photo</button>
+        <button onclick="viewPhotos()">View Photos</button>
+        <button onclick="downloadPhotos()">download Photos</button>
+        <button onclick="uploadPhotos()">upload Photos</button>
+    </div>
 
     <script>
+        let metadata = null;
+
         function uploadPhoto() {
             const input = document.getElementById('photoInput');
             if (input.files && input.files[0]) {
@@ -20,7 +82,7 @@
                     const img = new Image();
                     img.src = e.target.result;
                     img.onload = function() {
-                        const metadata = {
+                        metadata = {
                             name: file.name,
                             size: file.size,
                             type: file.type,
@@ -28,22 +90,30 @@
                             width: img.width,
                             height: img.height
                         };
-                        saveMetadata(metadata);
+                        alert('Photo uploaded successfully!');
                     };
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        function saveMetadata(metadata) {
-            const jsonData = JSON.stringify(metadata, null, 2);
-            const blob = new Blob([jsonData], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'index.json';
-            a.click();
-            URL.revokeObjectURL(url);
+        function downloadMetadata() {
+            if (metadata) {
+                const jsonData = JSON.stringify(metadata, null, 2);
+                const blob = new Blob([jsonData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'metadata.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            } else {
+                alert('No metadata available. Please upload a photo first.');
+            }
+        }
+
+        function viewPhotos() {
+            alert('This feature is not implemented yet.');
         }
     </script>
 </body>
